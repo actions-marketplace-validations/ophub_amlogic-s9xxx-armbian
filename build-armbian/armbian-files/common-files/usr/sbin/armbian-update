@@ -566,7 +566,7 @@ backup_kernel() {
 # Update the .deb kernel
 update_deb_kernel() {
     cd ${kernel_path}
-    echo -e "${STEPS} Start unpacking kernel..."
+    echo -e "${STEPS} Start updating deb kernel..."
 
     # Identify the .deb files that need to be installed
     local install_files=""
@@ -581,15 +581,14 @@ update_deb_kernel() {
 
     # Install the .deb kernel packages
     if [[ -n "${install_files}" ]]; then
-        echo -e "${INFO} Installing deb packages..."
-
         # Use dpkg to install the kernel packages
         dpkg -i ${install_files} >/dev/null 2>&1
-        [[ "${?}" -eq "0" ]] && echo -e "${INFO} Kernel deb packages installed successfully." || {
+        [[ "${?}" -eq "0" ]] && echo -e "${INFO} Kernel deb packages installation succeeded." || {
+            echo -e "${INFO} Fix packages installation status..."
             apt-get install -f -y >/dev/null 2>&1
         }
     else
-        error_msg "No kernel deb packages found to install."
+        error_msg "Missing kernel deb installation packages."
     fi
 
     # Update release file
@@ -604,7 +603,7 @@ update_deb_kernel() {
 # Update the .tar.gz kernel
 update_tar_kernel() {
     cd ${kernel_path}
-    echo -e "${STEPS} Start unpacking kernel..."
+    echo -e "${STEPS} Start updating tar kernel..."
 
     # Delete the current kernel files
     rm -f /boot/config-* /boot/initrd.img-* /boot/System.map-* /boot/uInitrd-* /boot/vmlinuz-*
